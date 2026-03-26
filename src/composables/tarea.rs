@@ -6,12 +6,13 @@ pub struct Tarea {
     id: u32,
     descripcion: String,
     estado: String,
+    usuario_id: u32,
     creado_en: u64,
     actualizado_en: u64,
 }
 
 impl Tarea {
-    pub fn new(id: u32, descripcion: String) -> Self {
+    pub fn new(id: u32, descripcion: String, usuario_id: u32) -> Self {
         let tiempo_actual = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap()
@@ -21,6 +22,7 @@ impl Tarea {
             id,
             descripcion,
             estado: String::from("todo"),
+            usuario_id,
             creado_en: tiempo_actual,
             actualizado_en: tiempo_actual,
         }
@@ -30,16 +32,20 @@ impl Tarea {
     // GETTERS 
     // ===================
     
-    pub fn id(&self) -> u32 {
+    pub fn get_id(&self) -> u32 {
         self.id
     }
 
-    pub fn descripcion(&self) -> &str {
+    pub fn get_descripcion(&self) -> &str {
         &self.descripcion
     }
 
-    pub fn estado(&self) -> &str {
+    pub fn get_estado(&self) -> &str {
         &self.estado
+    }
+
+    pub fn get_usuario_id(&self) -> u32 {
+        self.usuario_id
     }
 
     // ===================
@@ -53,4 +59,5 @@ impl Tarea {
             .unwrap()
             .as_secs();
     }
+
 }
