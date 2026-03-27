@@ -14,16 +14,15 @@ use process::eliminar::ejecutar as eliminar_tarea;
 use process::usuarios_process::ejecutar as gestionar_usuarios;
 
 fn main() {
-    // 1. CAPTURAR ARGUMENTOS PRIMERO
+    
     let args: Vec<String> = env::args().collect();
 
-    // 2. SI NO HAY ARGUMENTOS (solo 'cargo run'), MOSTRAR AYUDA Y SALIR
+    // SI NO HAY ARGUMENTOS (solo 'cargo run'), MOSTRAR AYUDA Y SALIR
     if args.len() < 2 {
         mostrar_menu_principal();
-        return; // Aquí termina el programa sin pedir login
+        return; 
     }
 
-    // --- FASE DE DATOS Y AUTENTICACIÓN ---
     // Si llegamos aquí, es porque el usuario sí quiere ejecutar un comando.
 
     let mut usuarios = inicializar_usuarios().unwrap_or_else(|error| {
@@ -31,10 +30,9 @@ fn main() {
         std::process::exit(1);
     });
 
-    // Ahora sí pedimos el login porque se necesita para los comandos
     let usuario_logueado = match iniciar_sesion(&usuarios) {
         Some(u) => u,
-        None => return, // Error de login ya imprime su mensaje en auth.rs
+        None => return, 
     };
 
     let mut mis_tareas = inicializar_memoria().unwrap_or_else(|error| {

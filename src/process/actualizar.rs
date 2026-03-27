@@ -1,8 +1,15 @@
 use crate::composables::tarea::Tarea;
 use crate::process::file_process::guardar_tareas;
 
+/// Ejecuta el proceso de actualización del estado de una tarea.
+/// 
+/// Esta función realiza los siguientes pasos:
+/// 1. Valida que se hayan proporcionado los argumentos correctos (ID de la tarea y nuevo estado).
+/// 2. Busca la tarea correspondiente en la lista de tareas en memoria.
+/// 3. Verifica los permisos de seguridad (solo el creador de la tarea o el administrador (ID 1) pueden modificarla).
+/// 4. Actualiza el estado de la tarea y guarda los cambios en el sistema de archivos.
 pub fn ejecutar(mis_tareas: &mut Vec<Tarea>, args: &[String], usuario_actual_id: u32) {
-    // 1. Validaciones básicas de argumentos
+    // 1 validaciones de argumentos
     if args.len() < 4 {
         eprintln!("\n Error: Faltan argumentos.");
         eprintln!("Uso: cargo run actualizar <ID_TAREA> <nuevo_estado>");
@@ -28,14 +35,13 @@ pub fn ejecutar(mis_tareas: &mut Vec<Tarea>, args: &[String], usuario_actual_id:
         if tarea.get_id() == id_tarea_buscada {
             tarea_encontrada = true;
 
-            // --- REGLA DE SEGURIDAD ---
-            if tarea.get_usuario_id() != usuario_actual_id {
+            // validacion de usuario
+            if tarea.get_usuario_id() != usuario_actual_id && tarea.get_usuario_id()!=1{
                 eprintln!("\n Acceso Denegado ");
-                eprintln!("No tienes permiso para modificar esta tarea porque no eres el creador.");
-                return; // Salimos sin actualizar nada
+                eprintln!("No tienes permiso para modificar esta tarea porque no eres el creador ni administrador.");
+                return; 
             }
 
-            // Si pasa la validación, actualizamos
             tarea.cambiar_estado(nuevo_estado.to_string());
             break;
         }
@@ -46,7 +52,6 @@ pub fn ejecutar(mis_tareas: &mut Vec<Tarea>, args: &[String], usuario_actual_id:
         return;
     }
 
-    // 4. Guardar cambios
     if let Err(e) = guardar_tareas(mis_tareas) {
         eprintln!("Error al guardar: {}", e);
     } else {

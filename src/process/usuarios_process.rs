@@ -4,6 +4,10 @@ use std::io::{self, Write};
 use crate::composables::usuario::Usuario;
 use crate::process::file_process::guardar_usuarios;
 
+/// Punto de entrada (enrutador) para todas las operaciones relacionadas con la gestión de usuarios.
+/// 
+/// Intercepta el subcomando escrito por el usuario en consola (crear, modificar, eliminar, limpiar) 
+/// y delega la ejecución a la función interna correspondiente. Muestra ayuda si los argumentos son insuficientes.
 pub fn ejecutar(lista_usuarios: &mut Vec<Usuario>, args: &[String]) {
     if args.len() < 3 {
         mostrar_ayuda();
@@ -21,6 +25,7 @@ pub fn ejecutar(lista_usuarios: &mut Vec<Usuario>, args: &[String]) {
     }
 }
 
+/// Imprime en la consola el menú de ayuda y los comandos disponibles para la gestión de usuarios.
 fn mostrar_ayuda() {
     println!("\n GESTIÓN DE USUARIOS");
     println!("Uso: cargo run gestionar-usuarios <opción>");
@@ -33,6 +38,9 @@ fn mostrar_ayuda() {
 
 // --- FUNCIONES DE LÓGICA ---
 
+/// Inicia el proceso interactivo en terminal para agregar un nuevo usuario.
+/// Pide en consola el nombre y contraseña, calcula el ID del usuario autoincrementándolo
+/// e ingresa el nuevo `Usuario` en la lista, guardando los cambios luego.
 fn crear_usuario(lista: &mut Vec<Usuario>) {
     print!("Nombre del nuevo usuario: ");
     io::stdout().flush().unwrap();
@@ -51,6 +59,9 @@ fn crear_usuario(lista: &mut Vec<Usuario>) {
     actualizar_archivo(lista, "Usuario creado con éxito.");
 }
 
+/// Busca un usuario por su ID provisto en los argumentos de la consola y permite modificar
+/// su nombre y su contraseña de forma interactiva. Protege contra la modificación de las cuentas
+/// base/por defecto (IDs 1 y 2). Si la entrada de un campo está vacía, no altera ese campo.
 fn modificar_usuario(lista: &mut Vec<Usuario>, args: &[String]) {
     if args.len() < 4 {
         println!("Uso: cargo run gestionar-usuarios modificar <ID>");
@@ -82,6 +93,8 @@ fn modificar_usuario(lista: &mut Vec<Usuario>, args: &[String]) {
     }
 }
 
+/// Elimina a un usuario especifico por su ID proporcionado en los argumentos, protegiendo las 
+/// cuentas default globales (Id 1 y 2). Retiene solo a los usuarios cuyo ID local sea diferente de este.
 fn eliminar_usuario(lista: &mut Vec<Usuario>, args: &[String]) {
     if args.len() < 4 {
         println!("Uso: cargo run gestionar-usuarios eliminar <ID>");
@@ -104,12 +117,16 @@ fn eliminar_usuario(lista: &mut Vec<Usuario>, args: &[String]) {
     }
 }
 
+/// Borra todos los usuarios registrados a excepción de las cuentas permanentes (IDs 1 y 2). 
+/// Sirve como un reset de los usuarios adicionales del sistema.
 fn limpiar_usuarios(lista: &mut Vec<Usuario>) {
     // Retenemos solo los IDs 1 y 2
     lista.retain(|u| u.get_id() <= 2);
     actualizar_archivo(lista, "Se han eliminado todos los usuarios adicionales.");
 }
 
+/// Función auxiliar usada en este mismo archivo. Delega la lógica de guardar sobre `file_process`, 
+/// proveyendo el manejo de errores global unificado y la retroalimentación de éxito.
 fn actualizar_archivo(lista: &Vec<Usuario>, mensaje: &str) {
     if let Err(e) = guardar_usuarios(lista) {
         eprintln!("Error al guardar usuarios: {}", e);

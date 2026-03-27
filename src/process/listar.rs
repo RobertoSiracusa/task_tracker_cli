@@ -3,8 +3,12 @@ use crate::composables::tarea::Tarea;
 use crate::composables::usuario::Usuario;
 
 
+/// Filtra y muestra en consola las tareas existentes según su estado (todas,
+///  pendientes, en-proceso o completadas), incluyendo el nombre de su creador.
+/// El filtro se especifica como argumento al comando listar. --- IGNORE ---
+/// Ejemplo de uso: cargo run listar pendientes
 pub fn ejecutar(mis_tareas: &[Tarea], args: &[String], usuarios: &[Usuario]) {
-    // 1. Validar si el usuario proporcionó el filtro
+    
     // args[0] = programa, args[1] = listar, args[2] = filtro
     if args.len() < 3 {
         println!("\n MODO DE USO: cargo run listar <opción>");
@@ -15,13 +19,12 @@ pub fn ejecutar(mis_tareas: &[Tarea], args: &[String], usuarios: &[Usuario]) {
         println!("  • en-proceso  : Tareas en las que se está trabajando");
         println!("  • completadas : Tareas finalizadas");
         println!("{}", "-".repeat(45));
-        return; // Detenemos la ejecución aquí mismo
+        return; 
     }
 
-    // 2. Si llegamos aquí, es porque args[2] existe
+    
     let filtro = args[2].as_str();
 
-    // 3. Aplicar el filtrado según la opción elegida
     let tareas_filtradas: Vec<&Tarea> = match filtro {
         "completadas" => mis_tareas.iter().filter(|t| t.get_estado() == "done").collect(),
         "pendientes"  => mis_tareas.iter().filter(|t| t.get_estado() == "todo").collect(),
@@ -39,7 +42,6 @@ pub fn ejecutar(mis_tareas: &[Tarea], args: &[String], usuarios: &[Usuario]) {
         return;
     }
 
-    // 5. Mostrar la tabla de resultados
     println!("\n--- RESULTADOS PARA: {} ---", filtro.to_uppercase());
     println!("{:<4} | {:<30} | {:<12} | {}", "ID", "DESCRIPCIÓN", "ESTADO", "AUTOR");
     println!("{}", "-".repeat(77));
