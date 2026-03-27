@@ -254,7 +254,7 @@ func main() {
 		targetId := os.Args[2]
 
 		var confirmar string
-		fmt.Printf("⚠️ ¿Estás seguro de que deseas borrar la tarea %s? (s/n): ", targetId)
+		fmt.Printf("¿Estás seguro de que deseas borrar la tarea %s? (s/n): ", targetId)
 		fmt.Scanln(&confirmar)
 		if confirmar != "s" && confirmar != "S" {
 			fmt.Println("Operación cancelada.")
@@ -263,7 +263,7 @@ func main() {
 
 		tareas, err := composables.GetAllTasks("storage/task.json")
 		if err != nil {
-			fmt.Println("❌ Error al acceder a las tareas:", err)
+			fmt.Println("Error al acceder a las tareas:", err)
 			return
 		}
 
@@ -279,15 +279,15 @@ func main() {
 		}
 
 		if !encontrado {
-			fmt.Printf("❌ No se encontró ninguna tarea con el ID: %s\n", targetId)
+			fmt.Printf("No se encontró ninguna tarea con el ID: %s\n", targetId)
 			return
 		}
 
 		err = composables.SaveAllTasks("storage/task.json", nuevaLista)
 		if err != nil {
-			fmt.Println("❌ Error al actualizar el archivo:", err)
+			fmt.Println("Error al actualizar el archivo:", err)
 		} else {
-			fmt.Printf("✅ Tarea %s eliminada con éxito.\n", targetId)
+			fmt.Printf("Tarea %s eliminada con éxito.\n", targetId)
 		}
 		return
 

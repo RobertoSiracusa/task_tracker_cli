@@ -4,8 +4,35 @@
     "tdescricpcion de tarea": "Tarea prueba 1",
     "id usuario": "1",
     "nombre del usuario": "admin",
-    "estado de la tarea": "pendiente",
+    "estado de la tarea": "lista",
     "fecha de creación": "27-03-2026 18:09:55",
-    "fecha de actualización": "27-03-2026 18:09:55"
+    "fecha de actualización": "27-03-2026 19:40:00"
+  },
+  {
+    "id tarea": "T-002",
+    "tdescricpcion de tarea": "Tarea: Recolectar comida",
+    "id usuario": "1",
+    "nombre del usuario": "admin",
+    "estado de la tarea": "en-proceso",
+    "fecha de creación": "27-03-2026 19:38:08",
+    "fecha de actualización": "27-03-2026 19:40:15"
+  },
+  {
+    "id tarea": "T-003",
+    "tdescricpcion de tarea": "Tarea: Ordenar local",
+    "id usuario": "1",
+    "nombre del usuario": "admin",
+    "estado de la tarea": "en-proceso",
+    "fecha de creación": "27-03-2026 19:38:23",
+    "fecha de actualización": "27-03-2026 19:40:29"
+  },
+  {
+    "id tarea": "T-004",
+    "tdescricpcion de tarea": "Tarea: Cargar material",
+    "id usuario": "2",
+    "nombre del usuario": "Ignacio",
+    "estado de la tarea": "pendiente",
+    "fecha de creación": "27-03-2026 19:38:56",
+    "fecha de actualización": "27-03-2026 19:38:56"
   }
 ]
