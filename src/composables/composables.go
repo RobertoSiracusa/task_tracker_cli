@@ -2,11 +2,13 @@ package composables
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 )
 
 type Login struct {
+	Id       string `json:"id"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
@@ -37,6 +39,8 @@ func (l Login) SaveData(nameArchive string) error {
 		}
 	}
 
+	l.Id = fmt.Sprintf("%d", len(users)+1)
+
 	users = append(users, l)
 	newData, err := json.MarshalIndent(users, "", "  ")
 	if err != nil {
@@ -58,26 +62,24 @@ func (l Login) SaveData(nameArchive string) error {
 	return err
 }
 
-func ListUsernames(nameArchive string) ([]string, error) {
-	var allUsers []Login // Lista para decodificar todo el JSON
-	var names []string   // Lista para guardar solo los nombres
+func GetAllUsers(nameArchive string) ([]Login, error) {
+	var allUsers []Login
 
 	content, err := os.ReadFile(nameArchive)
 	if err != nil {
 		return nil, err
 	}
 
-	// Decodificamos el contenido del archivo en allUsers
 	if err := json.Unmarshal(content, &allUsers); err != nil {
 		return nil, err
 	}
 
-	// Llenamos la lista de nombres
-	for _, u := range allUsers {
-		if u.Username != "" { // Evita agregar nombres vacíos
-			names = append(names, u.Username)
-		}
+	return allUsers, nil
+}
+func SaveAllUsers(nameArchive string, users []Login) error {
+	data, err := json.MarshalIndent(users, "", "  ")
+	if err != nil {
+		return err
 	}
-
-	return names, nil
+	return os.WriteFile(nameArchive, data, 0644)
 }

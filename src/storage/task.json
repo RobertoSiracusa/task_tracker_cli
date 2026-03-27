@@ -1,0 +1,29 @@
+[
+  {
+    "id tarea": "T-001",
+    "tdescricpcion de tarea": "",
+    "id usuario": "",
+    "nombre del usuario": "a",
+    "estado de la tarea": "lista",
+    "fecha de creación": "27-03-2026 14:00:46",
+    "fecha de actualización": "27-03-2026 17:15:34"
+  },
+  {
+    "id tarea": "T-002",
+    "tdescricpcion de tarea": "bb",
+    "id usuario": "",
+    "nombre del usuario": "",
+    "estado de la tarea": "lista",
+    "fecha de creación": "27-03-2026 14:02:00",
+    "fecha de actualización": "27-03-2026 17:15:41"
+  },
+  {
+    "id tarea": "T-005",
+    "tdescricpcion de tarea": "Ultima",
+    "id usuario": "1",
+    "nombre del usuario": "admin",
+    "estado de la tarea": "pendiente",
+    "fecha de creación": "27-03-2026 14:40:57",
+    "fecha de actualización": "27-03-2026 14:40:57"
+  }
+]

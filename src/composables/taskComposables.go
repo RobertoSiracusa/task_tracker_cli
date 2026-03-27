@@ -2,60 +2,85 @@ package composables
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
+	"time"
 )
 
 type Task struct {
-	Name  string `json:"task name"`
-	Id    string `json:"id"`
-	State string `json:"state"`
+	IdTask   string `json:"id tarea"`
+	Name     string `json:"tdescricpcion de tarea"`
+	IdUser   string `json:"id usuario"`
+	UserName string `json:"nombre del usuario"`
+	State    string `json:"estado de la tarea"`
+	Create   string `json:"fecha de creación"`
+	Update   string `json:"fecha de actualización"`
 }
 
-func NewTask(name string, id string, state string) Task {
+func NewTask(name, idUser, state, userName string) Task {
 	return Task{
-		Name:  name,
-		Id:    id,
-		State: state,
+		Name:     name,
+		IdUser:   idUser,
+		UserName: userName,
+		State:    state,
 	}
 }
 
 func (t Task) SaveData(nameArchive string) error {
-	tasks := []Task{}
+	var tasks []Task
 	file, err := os.OpenFile(nameArchive, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		return err
 	}
-	cont, err := io.ReadAll(file)
-	if err != nil {
-		return err
-	}
+	defer file.Close()
+
+	cont, _ := io.ReadAll(file)
 	if len(cont) > 0 {
-		errUnmarshal := json.Unmarshal(cont, &tasks)
-		if errUnmarshal != nil {
-			// Si el JSON estaba mal formado o era el formato viejo (objeto único),
-			// reiniciamos 'tasks' como lista vacía para sobreescribir con el formato correcto.
-			tasks = []Task{}
-		}
+		json.Unmarshal(cont, &tasks)
 	}
+
+	// --- AUTO GENERACIÓN ---
+	t.IdTask = fmt.Sprintf("T-%03d", len(tasks)+1) // ID único basado en cuenta
+	fechaActual := time.Now().Format("02-01-2006 15:04:05")
+	t.Create = fechaActual
+	t.Update = fechaActual
 
 	tasks = append(tasks, t)
-	newData, err := json.MarshalIndent(tasks, "", "  ")
-	if err != nil {
-		return err
-	}
+	newData, _ := json.MarshalIndent(tasks, "", "  ")
 
-	// 7. Limpiamos el archivo y escribimos desde el principio
-	err = file.Truncate(0) // Borra el contenido previo
-	if err != nil {
-		return err
-	}
-	_, err = file.Seek(0, 0) // Mueve el puntero al inicio
-	if err != nil {
-		return err
-	}
-
-	// 8. Escribimos los nuevos datos (la lista actualizada)
+	file.Truncate(0)
+	file.Seek(0, 0)
 	_, err = file.Write(newData)
 	return err
+}
+
+// GetAllTasks lee el archivo JSON y retorna un slice de tareas
+func GetAllTasks(nameArchive string) ([]Task, error) {
+	var tasks []Task
+	file, err := os.ReadFile(nameArchive)
+	if err != nil {
+		// Si el archivo no existe, retornamos un slice vacío sin error
+		if os.IsNotExist(err) {
+			return tasks, nil
+		}
+		return nil, err
+	}
+
+	if len(file) > 0 {
+		err = json.Unmarshal(file, &tasks)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return tasks, nil
+}
+
+// SaveAllTasks sobrescribe el archivo JSON con la lista completa proporcionada
+func SaveAllTasks(nameArchive string, tasks []Task) error {
+	data, err := json.MarshalIndent(tasks, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(nameArchive, data, 0644)
 }
