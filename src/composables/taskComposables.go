@@ -18,6 +18,8 @@ type Task struct {
 	Update   string `json:"fecha de actualización"`
 }
 
+// NewTask inicializa una nueva estructura Task con el nombre, ID de usuario,
+// estado inicial y nombre del usuario proporcionado.
 func NewTask(name, idUser, state, userName string) Task {
 	return Task{
 		Name:     name,
@@ -27,6 +29,8 @@ func NewTask(name, idUser, state, userName string) Task {
 	}
 }
 
+// SaveData añade una nueva tarea al archivo JSON. Se encarga de generar
+// automáticamente un ID único (T-xxx) y registra las fechas de creación y actualización.
 func (t Task) SaveData(nameArchive string) error {
 	var tasks []Task
 	file, err := os.OpenFile(nameArchive, os.O_RDWR|os.O_CREATE, 0644)
@@ -40,8 +44,7 @@ func (t Task) SaveData(nameArchive string) error {
 		json.Unmarshal(cont, &tasks)
 	}
 
-	// --- AUTO GENERACIÓN ---
-	t.IdTask = fmt.Sprintf("T-%03d", len(tasks)+1) // ID único basado en cuenta
+	t.IdTask = fmt.Sprintf("T-%03d", len(tasks)+1)
 	fechaActual := time.Now().Format("02-01-2006 15:04:05")
 	t.Create = fechaActual
 	t.Update = fechaActual
@@ -55,12 +58,12 @@ func (t Task) SaveData(nameArchive string) error {
 	return err
 }
 
-// GetAllTasks lee el archivo JSON y retorna un slice de tareas
+// GetAllTasks lee el archivo JSON de tareas, deserializa su contenido a una lista
+// de objetos Task y los devuelve. Si el archivo no existe, retorna una lista vacía.
 func GetAllTasks(nameArchive string) ([]Task, error) {
 	var tasks []Task
 	file, err := os.ReadFile(nameArchive)
 	if err != nil {
-		// Si el archivo no existe, retornamos un slice vacío sin error
 		if os.IsNotExist(err) {
 			return tasks, nil
 		}
@@ -76,7 +79,8 @@ func GetAllTasks(nameArchive string) ([]Task, error) {
 	return tasks, nil
 }
 
-// SaveAllTasks sobrescribe el archivo JSON con la lista completa proporcionada
+// SaveAllTasks sobrescribe el archivo JSON con la lista completa de tareas proporcionada,
+// formateando el contenido de manera legible.
 func SaveAllTasks(nameArchive string, tasks []Task) error {
 	data, err := json.MarshalIndent(tasks, "", "  ")
 	if err != nil {

@@ -13,6 +13,8 @@ type Login struct {
 	Password string `json:"password"`
 }
 
+// NewLogin crea e inicializa una nueva instancia de la estructura Login (usuario)
+// con el nombre de usuario y contraseña proporcionados.
 func NewLogin(name string, pass string) Login {
 	return Login{
 		Username: name,
@@ -20,6 +22,9 @@ func NewLogin(name string, pass string) Login {
 	}
 }
 
+// SaveData guarda la información de un usuario individual en un archivo JSON.
+// Si el archivo ya contiene usuarios, añade el nuevo usuario a la lista existente
+// y le asigna un ID incremental automático antes de reescribir todo el archivo.
 func (l Login) SaveData(nameArchive string) error {
 	users := []Login{}
 	file, err := os.OpenFile(nameArchive, os.O_RDWR|os.O_CREATE, 0644)
@@ -33,8 +38,6 @@ func (l Login) SaveData(nameArchive string) error {
 	if len(cont) > 0 {
 		errUnmarshal := json.Unmarshal(cont, &users)
 		if errUnmarshal != nil {
-			// Si el JSON estaba mal formado o era el formato viejo (objeto único),
-			// reiniciamos 'users' como lista vacía para sobreescribir con el formato correcto.
 			users = []Login{}
 		}
 	}
@@ -47,21 +50,21 @@ func (l Login) SaveData(nameArchive string) error {
 		return err
 	}
 
-	// 7. Limpiamos el archivo y escribimos desde el principio
-	err = file.Truncate(0) // Borra el contenido previo
+	err = file.Truncate(0)
 	if err != nil {
 		return err
 	}
-	_, err = file.Seek(0, 0) // Mueve el puntero al inicio
+	_, err = file.Seek(0, 0) 
 	if err != nil {
 		return err
 	}
 
-	// 8. Escribimos los nuevos datos (la lista actualizada)
 	_, err = file.Write(newData)
 	return err
 }
 
+// GetAllUsers lee el archivo JSON especificado, deserializa su contenido a una lista
+// de objetos Login y los retorna. Retorna un error si no se puede leer o parsear.
 func GetAllUsers(nameArchive string) ([]Login, error) {
 	var allUsers []Login
 
@@ -76,6 +79,8 @@ func GetAllUsers(nameArchive string) ([]Login, error) {
 
 	return allUsers, nil
 }
+// SaveAllUsers toma una lista completa de usuarios y sobrescribe el archivo JSON
+// especificado con estos nuevos datos en un formato legible (identado).
 func SaveAllUsers(nameArchive string, users []Login) error {
 	data, err := json.MarshalIndent(users, "", "  ")
 	if err != nil {
