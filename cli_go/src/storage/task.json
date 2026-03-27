@@ -1,0 +1,11 @@
+[
+  {
+    "id tarea": "T-001",
+    "tdescricpcion de tarea": "Tarea prueba 1",
+    "id usuario": "1",
+    "nombre del usuario": "admin",
+    "estado de la tarea": "pendiente",
+    "fecha de creación": "27-03-2026 18:09:55",
+    "fecha de actualización": "27-03-2026 18:09:55"
+  }
+]
